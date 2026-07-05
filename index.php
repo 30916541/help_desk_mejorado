@@ -3,11 +3,30 @@ require 'db.php';
 
 $errores = [];
 $usuario = $asunto = $mensaje = '';
+$editarTicket = null;
+
+if (isset($_GET['eliminar'])) {
+    $id = (int) $_GET['eliminar'];
+    $consulta = 'DELETE FROM tickets WHERE id = ?';
+    $sentencia = $pdo->prepare($consulta);
+    $sentencia->execute([$id]);
+    header('Location: index.php?eliminado=1');
+    exit;
+}
+
+if (isset($_GET['editar'])) {
+    $id = (int) $_GET['editar'];
+    $consulta = 'SELECT * FROM tickets WHERE id = ?';
+    $sentencia = $pdo->prepare($consulta);
+    $sentencia->execute([$id]);
+    $editarTicket = $sentencia->fetch(PDO::FETCH_ASSOC);
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario = trim($_POST['usuario'] ?? '');
     $asunto  = trim($_POST['asunto'] ?? '');
     $mensaje = trim($_POST['mensaje'] ?? '');
+    $id      = $_POST['id'] ?? '';
 
     if ($usuario === '') {
         $errores['usuario'] = 'El usuario es obligatorio.';
@@ -36,10 +55,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errores)) {
-        $consulta = 'INSERT INTO tickets (usuario, asunto, mensaje) VALUES (?, ?, ?)';
-        $sentencia = $pdo->prepare($consulta);
-        $sentencia->execute([$usuario, $asunto, $mensaje]);
-        header('Location: index.php?registrado=1');
+        if ($id === '') {
+            $consulta = 'INSERT INTO tickets (usuario, asunto, mensaje) VALUES (?, ?, ?)';
+            $sentencia = $pdo->prepare($consulta);
+            $sentencia->execute([$usuario, $asunto, $mensaje]);
+            header('Location: index.php?registrado=1');
+        } else {
+            $estatus = trim($_POST['estatus'] ?? 'Abierto');
+            $consulta = 'UPDATE tickets SET usuario = ?, asunto = ?, mensaje = ?, estatus = ? WHERE id = ?';
+            $sentencia = $pdo->prepare($consulta);
+            $sentencia->execute([$usuario, $asunto, $mensaje, $estatus, $id]);
+            header('Location: index.php?actualizado=1');
+        }
         exit;
     }
 }
@@ -61,6 +88,10 @@ $incidencias = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 
     <?php if (isset($_GET['registrado'])): ?>
         <div class="mensaje-exito">Ticket registrado exitosamente.</div>
+    <?php elseif (isset($_GET['actualizado'])): ?>
+        <div class="mensaje-exito">Ticket actualizado exitosamente.</div>
+    <?php elseif (isset($_GET['eliminado'])): ?>
+        <div class="mensaje-exito">Ticket eliminado exitosamente.</div>
     <?php endif; ?>
 
     <form method="POST">
@@ -102,8 +133,43 @@ $incidencias = $sentencia->fetchAll(PDO::FETCH_ASSOC);
             <p class="meta">Enviado por: <?php echo htmlspecialchars($incidencia['usuario']); ?></p>
             <p><?php echo nl2br(htmlspecialchars($incidencia['mensaje'])); ?></p>
             <small class="fecha"><?php echo htmlspecialchars($incidencia['fecha_creacion']); ?></small>
+            <div class="acciones">
+                <a href="?editar=<?php echo $incidencia['id']; ?>" class="btn-editar">Editar</a>
+                <a href="?eliminar=<?php echo $incidencia['id']; ?>" class="btn-eliminar" onclick="return confirm('¿Est\u00e1s seguro de eliminar este ticket?')">Eliminar</a>
+            </div>
         </div>
     <?php endforeach; ?>
+
+    <?php if ($editarTicket): ?>
+    <div id="modal-editar" class="modal">
+        <div class="modal-contenido">
+            <h2>Editar Ticket</h2>
+            <form method="POST">
+                <input type="hidden" name="id" value="<?php echo $editarTicket['id']; ?>">
+
+                <label for="modal-usuario">Usuario</label>
+                <input type="text" id="modal-usuario" name="usuario" value="<?php echo htmlspecialchars($editarTicket['usuario']); ?>" required>
+
+                <label for="modal-asunto">Asunto</label>
+                <input type="text" id="modal-asunto" name="asunto" value="<?php echo htmlspecialchars($editarTicket['asunto']); ?>" required>
+
+                <label for="modal-mensaje">Mensaje</label>
+                <textarea id="modal-mensaje" name="mensaje" rows="4" required><?php echo htmlspecialchars($editarTicket['mensaje']); ?></textarea>
+
+                <label for="modal-estatus">Estatus</label>
+                <select id="modal-estatus" name="estatus">
+                    <option value="Abierto" <?php echo $editarTicket['estatus'] === 'Abierto' ? 'selected' : ''; ?>>Abierto</option>
+                    <option value="Cerrado" <?php echo $editarTicket['estatus'] === 'Cerrado' ? 'selected' : ''; ?>>Cerrado</option>
+                </select>
+
+                <div class="modal-botones">
+                    <button type="submit">Guardar Cambios</button>
+                    <a href="index.php" class="btn-cancelar">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <?php endif; ?>
 
 </body>
 </html>
