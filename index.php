@@ -135,7 +135,7 @@ $incidencias = $sentencia->fetchAll(PDO::FETCH_ASSOC);
             <small class="fecha"><?php echo htmlspecialchars($incidencia['fecha_creacion']); ?></small>
             <div class="acciones">
                 <a href="?editar=<?php echo $incidencia['id']; ?>" class="btn-editar">Editar</a>
-                <a href="?eliminar=<?php echo $incidencia['id']; ?>" class="btn-eliminar" onclick="return confirm('¿Est\u00e1s seguro de eliminar este ticket?')">Eliminar</a>
+                <a href="#" data-eliminar="<?php echo $incidencia['id']; ?>" class="btn-eliminar">Eliminar</a>
             </div>
         </div>
     <?php endforeach; ?>
@@ -170,6 +170,36 @@ $incidencias = $sentencia->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
     <?php endif; ?>
+
+    <div id="modal-confirmar" class="modal" style="display: none;">
+        <div class="modal-contenido modal-confirmar">
+            <p class="confirmar-mensaje">¿Estás seguro de eliminar este ticket?</p>
+            <p class="confirmar-sub">Esta acción no se puede deshacer.</p>
+            <div class="modal-botones">
+                <a href="#" id="btn-confirmar-si" class="btn-eliminar">Sí, eliminar</a>
+                <a href="#" id="btn-confirmar-no" class="btn-cancelar">Cancelar</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('click', function (e) {
+            var eliminar = e.target.closest('[data-eliminar]');
+            if (eliminar) {
+                e.preventDefault();
+                var id = eliminar.getAttribute('data-eliminar');
+                var modal = document.getElementById('modal-confirmar');
+                var btnSi = document.getElementById('btn-confirmar-si');
+                modal.style.display = '';
+                btnSi.href = '?eliminar=' + id;
+            }
+
+            if (e.target.closest('#btn-confirmar-no') || e.target.closest('#modal-confirmar') && !e.target.closest('.modal-contenido')) {
+                e.preventDefault();
+                document.getElementById('modal-confirmar').style.display = 'none';
+            }
+        });
+    </script>
 
 </body>
 </html>
