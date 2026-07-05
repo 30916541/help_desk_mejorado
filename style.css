@@ -1,3 +1,8 @@
+/* ============================================================
+   Estilos del Sistema de Mesa de Ayuda
+   ============================================================ */
+
+/* --- Estilos base --- */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     max-width: 800px;
@@ -11,6 +16,7 @@ h1 {
     text-align: center;
 }
 
+/* --- Formularios --- */
 form {
     background: #fff;
     padding: 20px;
@@ -37,6 +43,7 @@ textarea {
     font: inherit;
 }
 
+/* --- Mensajes de error --- */
 .mensaje-error {
     background: #f8d7da;
     color: #721c24;
@@ -47,6 +54,7 @@ textarea {
     font-size: 0.9em;
 }
 
+/* --- Botón de envío --- */
 button {
     background: #2563eb;
     color: white;
@@ -61,6 +69,7 @@ button:hover {
     background: #1d4ed8;
 }
 
+/* --- Mensajes de éxito --- */
 .mensaje-exito {
     background: #d4edda;
     color: #155724;
@@ -72,6 +81,7 @@ button:hover {
     font-weight: 600;
 }
 
+/* --- Tarjeta de incidencia --- */
 .tarjeta-incidencia {
     background: white;
     border-left: 5px solid #2563eb;
@@ -99,6 +109,7 @@ button:hover {
     font-size: 0.85em;
 }
 
+/* --- Acciones (editar / eliminar) --- */
 .acciones {
     margin-top: 12px;
     display: flex;
@@ -147,6 +158,7 @@ button:hover {
     background: #4b5563;
 }
 
+/* --- Select (desplegable) --- */
 select {
     width: 100%;
     padding: 10px;
@@ -158,6 +170,7 @@ select {
     background: white;
 }
 
+/* --- Modal (ventana emergente) --- */
 .modal {
     position: fixed;
     top: 0;
@@ -187,6 +200,7 @@ select {
     margin-top: 16px;
 }
 
+/* --- Modal de confirmación --- */
 .modal-confirmar {
     text-align: center;
     max-width: 400px;
