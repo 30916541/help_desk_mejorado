@@ -19,15 +19,32 @@ form {
     margin-bottom: 24px;
 }
 
+label {
+    display: block;
+    margin-top: 12px;
+    font-weight: 600;
+    font-size: 0.95em;
+}
+
 input,
 textarea {
     width: 100%;
     padding: 10px;
-    margin: 10px 0;
+    margin: 4px 0 6px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
     font: inherit;
+}
+
+.mensaje-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    font-size: 0.9em;
 }
 
 button {
