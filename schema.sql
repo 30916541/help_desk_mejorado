@@ -6,7 +6,7 @@ CREATE USER IF NOT EXISTS 'proyecto'@'localhost' IDENTIFIED BY 'proyecto';
 GRANT ALL PRIVILEGES ON mesadeayuda.* TO 'proyecto'@'localhost';
 FLUSH PRIVILEGES;
 
-CREATE TABLE IF NOT EXISTS incidencias (
+CREATE TABLE IF NOT EXISTS tickets (
   id INT AUTO_INCREMENT PRIMARY KEY,
   usuario VARCHAR(100) NOT NULL,
   asunto VARCHAR(255) NOT NULL,

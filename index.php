@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mensaje = trim($_POST['mensaje'] ?? '');
 
     if ($usuario !== '' && $asunto !== '' && $mensaje !== '') {
-        $consulta = 'INSERT INTO incidencias (usuario, asunto, mensaje) VALUES (?, ?, ?)';
+        $consulta = 'INSERT INTO tickets (usuario, asunto, mensaje) VALUES (?, ?, ?)';
         $sentencia = $pdo->prepare($consulta);
         $sentencia->execute([$usuario, $asunto, $mensaje]);
         header('Location: index.php');
@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$sentencia = $pdo->query('SELECT * FROM incidencias ORDER BY fecha_creacion DESC');
+$sentencia = $pdo->query('SELECT * FROM tickets ORDER BY fecha_creacion DESC');
 $incidencias = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
@@ -31,7 +31,7 @@ $incidencias = $sentencia->fetchAll(PDO::FETCH_ASSOC);
     <h1>Mesa de Ayuda - Gestión de Incidencias</h1>
 
     <form method="POST">
-        <h2>Crear Nueva Incidencia</h2>
+        <h2>Crear Nuevo Ticket</h2>
         <input type="text" name="usuario" placeholder="Tu nombre o correo" required>
         <input type="text" name="asunto" placeholder="Asunto del problema" required>
         <textarea name="mensaje" rows="4" placeholder="Describe detalladamente tu situación" required></textarea>
