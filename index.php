@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $consulta = 'INSERT INTO tickets (usuario, asunto, mensaje) VALUES (?, ?, ?)';
         $sentencia = $pdo->prepare($consulta);
         $sentencia->execute([$usuario, $asunto, $mensaje]);
-        header('Location: index.php');
+        header('Location: index.php?registrado=1');
         exit;
     }
 }
@@ -29,6 +29,10 @@ $incidencias = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 <body>
 
     <h1>Mesa de Ayuda - Gestión de Incidencias</h1>
+
+    <?php if (isset($_GET['registrado'])): ?>
+        <div class="mensaje-exito">Ticket registrado exitosamente.</div>
+    <?php endif; ?>
 
     <form method="POST">
         <h2>Crear Nuevo Ticket</h2>
